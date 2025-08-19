@@ -1,0 +1,254 @@
+/*
+ * ---------------------------------
+ * 1. THEME & VARIABLE DEFINITIONS
+ * ---------------------------------
+ */
+
+:root, body[data-theme='light'] {
+    /* Neumorphic Light Theme */
+    --bg-color: #e0e0e0;
+    --calc-bg: #e0e0e0;
+    --display-bg: #dde1e7;
+    --text-color: #333;
+    --text-color-light: #555;
+    --op-color: #e67e22;
+    --btn-bg: #e0e0e0;
+    --btn-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #ffffff;
+    --btn-shadow-inset: inset 5px 5px 10px #bebebe, inset -5px -5px 10px #ffffff;
+    --font-display: 'Orbitron', sans-serif;
+    --font-buttons: 'Roboto', sans-serif;
+}
+
+body[data-theme='dark'] {
+    /* Glassmorphism Dark Theme */
+    --bg-color: #1a1a2e;
+    --bg-image: linear-gradient(315deg, #1a1a2e 0%, #16213e 74%);
+    --calc-bg: rgba(255, 255, 255, 0.1);
+    --display-bg: rgba(0, 0, 0, 0.2);
+    --text-color: #ffffff;
+    --text-color-light: #aaa;
+    --op-color: #3498db;
+    --btn-bg: rgba(255, 255, 255, 0.15);
+    --btn-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    --btn-shadow-inset: inset 1px 1px 4px rgba(0,0,0,0.5);
+}
+
+body[data-theme='synthwave'] {
+    /* Synthwave Theme */
+    --bg-color: #1a1a2e;
+    --bg-image: linear-gradient(to right top, #051937, #0f102c, #16071f, #190212, #180000);
+    --calc-bg: rgba(22, 22, 22, 0.6);
+    --display-bg: rgba(0, 0, 0, 0.4);
+    --text-color: #00f7ff;
+    --text-color-light: #00f7ff88;
+    --op-color: #ff00ff;
+    --btn-bg: transparent;
+    --btn-shadow: 0 0 5px var(--op-color), 0 0 10px var(--op-color);
+    --btn-shadow-inset: 0 0 15px var(--text-color), inset 0 0 5px var(--text-color);
+    --text-shadow: 0 0 3px var(--text-color);
+}
+
+
+/*
+ * ---------------------------------
+ * 2. GENERAL & LAYOUT STYLES
+ * ---------------------------------
+ */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-buttons);
+    background-color: var(--bg-color);
+    background-image: var(--bg-image, none);
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    padding: 20px 0;
+    transition: background-color 0.4s ease;
+}
+
+.calculator-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.calculator {
+    width: clamp(300px, 90vw, 400px);
+    border-radius: 20px;
+    padding: 25px;
+    background: var(--calc-bg);
+    box-shadow: var(--btn-shadow);
+    border: 1px solid rgba(255, 255, 255, 0.1); /* For glassmorphism */
+    backdrop-filter: blur(10px); /* For glassmorphism */
+    transition: all 0.4s ease;
+}
+
+
+/*
+ * ---------------------------------
+ * 3. THEME SWITCHER
+ * ---------------------------------
+ */
+
+.theme-switcher {
+    display: flex;
+    gap: 1rem;
+    padding: 0.5rem;
+    background: var(--calc-bg);
+    border-radius: 50px;
+    box-shadow: var(--btn-shadow-inset);
+    margin-bottom: 1rem;
+}
+
+.theme-option {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid rgba(0,0,0,0);
+    transition: all 0.3s ease;
+}
+
+.theme-option[data-theme='light'] { background: #e0e0e0; }
+.theme-option[data-theme='dark'] { background: #1a1a2e; }
+.theme-option[data-theme='synthwave'] { background: linear-gradient(-45deg, #00f7ff, #ff00ff); }
+
+.theme-option.active {
+    border-color: var(--op-color);
+    transform: scale(1.1);
+}
+
+
+/*
+ * ---------------------------------
+ * 4. DISPLAY & HISTORY
+ * ---------------------------------
+ */
+
+.display {
+    background: var(--display-bg);
+    box-shadow: var(--btn-shadow-inset);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+    text-align: right;
+    word-wrap: break-word;
+    word-break: break-all;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.previous-operand {
+    font-size: 1.5rem;
+    color: var(--op-color);
+    opacity: 0.8;
+}
+
+.current-operand {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    color: var(--text-color);
+    text-shadow: var(--text-shadow, none);
+    transition: font-size 0.2s ease-in-out;
+}
+
+.history-container {
+    position: relative;
+    background: var(--display-bg);
+    box-shadow: var(--btn-shadow-inset);
+    border-radius: 10px;
+    margin-bottom: 25px;
+    max-height: 100px;
+    overflow-y: auto;
+    padding: 10px;
+    padding-right: 35px; /* Space for clear button */
+}
+
+.history-list {
+    list-style: none;
+    font-size: 0.9rem;
+    text-align: right;
+    color: var(--text-color-light);
+}
+
+.history-list li {
+    padding: 2px 5px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+}
+.history-list li:last-child {
+    border-bottom: none;
+}
+
+.clear-history-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    color: var(--text-color-light);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+    border-radius: 50%;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.clear-history-btn:hover {
+    opacity: 1;
+}
+
+
+/*
+ * ---------------------------------
+ * 5. BUTTONS & CREDIT
+ * ---------------------------------
+ */
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.buttons button {
+    font-family: var(--font-buttons);
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding: 20px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    background: var(--btn-bg);
+    color: var(--text-color);
+    box-shadow: var(--btn-shadow);
+    transition: all 0.15s ease-out;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.buttons button:hover { filter: brightness(1.1); }
+.buttons button:active { transform: scale(0.95); box-shadow: var(--btn-shadow-inset); }
+.buttons button.span-two { grid-column: span 2; }
+.buttons button[data-operator],
+.buttons button[data-action='delete'],
+.buttons button[data-action='clear'] {
+    color: var(--op-color);
+    font-weight: 700;
+}
+
+.credit {
+    font-size: 0.9rem;
+    text-align: center;
+    color: var(--text-color);
+    opacity: 0.6;
+}
